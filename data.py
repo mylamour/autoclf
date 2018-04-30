@@ -1,32 +1,27 @@
 train_data_path = './atec_anti_fraud_train.csv'
 predict_data_path = './atec_anti_fraud_test_a.csv'
 
-
-
-data = pd.read_csv(train_data_path)
-data = data.fillna(0)
-
-unlabeled = data[data['label'] == -1]
-data = data[data['label'] != -1]
+DROPCOLUMS = ["id","label","date"]
 
 # 0 .... 1, 0 is safe / 1 is not safe
 
-DROPCOLUMS = ["id","label","date"]
-
-
-train, test = train_test_split(data, test_size=0.2, random_state=42)
-
-cols = [c for c in DROPCOLUMS if c in train.columns]
-x_train = train.drop(cols,axis=1)
-
-cols = [c for c in DROPCOLUMS if c in test.columns]
-x_test = test.drop(cols,axis=1)
-
-y_train = train['label']
-y_test = test['label']
-
-
 def load_train_test():
+    data = pd.read_csv(train_data_path)
+    data = data.fillna(0)
+    unlabeled = data[data['label'] == -1]
+    labeled = data[data['label'] != -1]
+
+    train, test = train_test_split(labeled, test_size=0.2, random_state=42)
+
+    cols = [c for c in DROPCOLUMS if c in train.columns]
+    x_train = train.drop(cols,axis=1)
+
+    cols = [c for c in DROPCOLUMS if c in test.columns]
+    x_test = test.drop(cols,axis=1)
+
+    y_train = train['label']
+    y_test = test['label']
+
     return x_train, y_train, x_test, y_test
 
 def load_predict_data():

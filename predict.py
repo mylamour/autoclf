@@ -7,11 +7,6 @@ from .data import load_predict_data
 
 models = glob.glob('./*.pkl')
 
-data_features = pd.read_csv('atec_anti_fraud_test_a.csv')
-data_features = data_features.fillna(0)
-data_id = data_features['id']
-data_features = data_features.drop(['id','date'],axis=1)
-
 data_id, data_features = load_predict_data()
 
 
