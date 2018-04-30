@@ -1,3 +1,13 @@
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras.utils import to_categorical
+# Keras Model/Layers
+
+from keras.models import Model
+from keras.layers import Input, Dense, LSTM, Activation, Conv2D, \
+                         MaxPool2D, Dropout, Flatten, Embedding,Reshape,Concatenate
+from keras.callbacks import ModelCheckpoint
+from keras.optimizers import Adam
+
 class CNN():
     def __init__(self,kernel_initializer='he_normal',optimizer='adam',activation='relu',loss='binary_crossentropy',dropout=0.5):
         

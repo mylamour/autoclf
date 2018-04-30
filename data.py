@@ -1,3 +1,6 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
 train_data_path = './atec_anti_fraud_train.csv'
 predict_data_path = './atec_anti_fraud_test_a.csv'
 

@@ -27,20 +27,6 @@ from xgboost import XGBClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 
-# Keras Binding
-
-from keras.wrappers.scikit_learn import KerasClassifier
-from keras.utils import to_categorical
-
-
-# Keras Model/Layers
-
-from keras.models import Model
-from keras.layers import Input, Dense, LSTM, Activation, Conv2D, \
-                         MaxPool2D, Dropout, Flatten, Embedding,Reshape,Concatenate
-from keras.callbacks import ModelCheckpoint
-from keras.optimizers import Adam
-
 from .data import load_train_test
 
 x_train, y_train, x_test, y_test = load_train_test()
