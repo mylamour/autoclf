@@ -3,7 +3,7 @@ import glob
 import csv
 import logging
 from sklearn.externals import joblib
-from .data import load_predict_data
+from data import load_predict_data
 
 models = glob.glob('./*.pkl')
 

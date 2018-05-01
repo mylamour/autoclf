@@ -27,14 +27,14 @@ from xgboost import XGBClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 
-from .data import load_train_test
+from data import load_train_test
 
 x_train, y_train, x_test, y_test = load_train_test()
 
 
-clf1 = DecisionTreeClassifier()     #max_depth=4
+clf1 = DecisionTreeClassifier()     #max_depth=4a
 clf2 = KNeighborsClassifier(n_neighbors=7)
-clf3 = SVC(kernel='rbf', probability=True)
+clf3 = SVC(kernel='rbf', probability=True)      # So slowly
 clf4 = LogisticRegression(random_state=1)
 clf5 = XGBClassifier()
 clf6 = GaussianNB()
@@ -46,7 +46,7 @@ voting1 = VotingClassifier(
     estimators=[
         ('dt',clf1),
         ('knn', clf2),
-        ('svc', clf3),
+        # ('svc', clf3),
         ('lg',clf4)    
     ],
     voting='soft'
@@ -56,7 +56,7 @@ voting2 = VotingClassifier(
     estimators=[
         ('dt',clf1),
         ('knn', clf2),
-        ('svc', clf3),
+        # ('svc', clf3),
         ('lg',clf4),    
         ('xgb',clf5)    
     ],
@@ -64,7 +64,8 @@ voting2 = VotingClassifier(
 )
 
 clfs = [
-    clf1,clf2,clf3,clf4,clf5,clf6,clf7,voting1,voting2
+    # clf3,
+    clf1,clf2,clf4,clf5,clf6,clf7,voting1,voting2
 ]
 
 for clf in clfs:
