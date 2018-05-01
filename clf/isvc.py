@@ -20,8 +20,7 @@ class IGridSVC():
             'reduce_dim': [SelectKBest(chi2)],
             'reduce_dim__k': N_FEATURES_OPTIONS,
             'classify__C': C_OPTIONS
-        },
-    ]
+        },]
 
     pipe = Pipeline([
         ('reduce_dim', PCA()),
@@ -29,16 +28,17 @@ class IGridSVC():
     ])
 
     def __init__(self):
-        self.x_train = None
-        self.y_train = None
         self.model = None
 
     def fit(self,x_train, y_train):
-        self.x_train = x_train
-        self.y_train = y_train
         self.model = GridSearchCV(IGridSVC.pipe, cv=3, n_jobs=-1, param_grid=IGridSVC.param_grid)
         self.model = self.model.fit(x_train,y_train)
 
     def score(self,x_test,y_test):
         return self.model.score(x_test,y_test)
     
+    def predict(self, x_test):
+        return self.model.predict(x_test)
+
+    def predict_proba(self, x_test):
+        return self.model.predict_proba(x_test)
