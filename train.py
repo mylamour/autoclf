@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 # Sklearn Common Import
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, roc_auc_score
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.feature_selection import SelectKBest, SelectFromModel
 from sklearn.pipeline import Pipeline
@@ -27,12 +27,18 @@ from xgboost import XGBClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 
-from data import load_train_test
+from data import load_train_test, _load_iris_test
 
-x_train, y_train, x_test, y_test = load_train_test()
+TESTFALG = True
+
+if TESTFALG:
+    x_train, y_train, x_test, y_test = _load_iris_test()
+else:
+    x_train, y_train, x_test, y_test = load_train_test()
 
 
 clf1 = DecisionTreeClassifier()     #max_depth=4a
+clf1_1 = RandomForestClassifier()
 clf2 = KNeighborsClassifier(n_neighbors=7)
 clf3 = SVC(kernel='rbf', probability=True)      # So slowly
 clf4 = LogisticRegression(random_state=1)
@@ -41,12 +47,14 @@ clf6 = GaussianNB()
 clf7 = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
                          algorithm="SAMME",n_estimators=200)
 
+from clf import IGridSVC
+c_clf1 = IGridSVC()
 
 voting1 = VotingClassifier(
     estimators=[
         ('dt',clf1),
         ('knn', clf2),
-        # ('svc', clf3),
+        ('svc', clf3),
         ('lg',clf4)    
     ],
     voting='soft'
@@ -56,7 +64,7 @@ voting2 = VotingClassifier(
     estimators=[
         ('dt',clf1),
         ('knn', clf2),
-        # ('svc', clf3),
+        ('svc', clf3),
         ('lg',clf4),    
         ('xgb',clf5)    
     ],
@@ -64,18 +72,24 @@ voting2 = VotingClassifier(
 )
 
 clfs = [
-    # clf3,
-    clf1,clf2,clf4,clf5,clf6,clf7,voting1,voting2
+    c_clf1,    
+    clf3,
+    clf1,clf1_1,clf2,clf4,clf5,clf6,clf7,voting1,voting2
 ]
 
 for clf in clfs:
     name = clf.__class__.__name__
-    modeldumpname = "{}.pkl".format(name.lower())
+    modeldumpname = "saved/{}.pkl".format(name.lower())
 
     print("[*] Now Training With {:<10s}".format(name))
 
-    cross_val_score(clf,x_train,y_train)
+
+    # clf = GridSearchCV(estimator=clf, param_grid=dict(C=Cs),n_jobs=-1)
+    clf.fit(x_train,y_train)
     score = clf.score(x_test,y_test)
+
+    # cross_val_score(clf, x_train, y_train, cv=10)
+    # rocauc = roc_auc_score(y_test,score)
 
     if os.path.isfile(modeldumpname):
         print("[x] {} Already Exists".format(modeldumpname))

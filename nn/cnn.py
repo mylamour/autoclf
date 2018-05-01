@@ -69,4 +69,3 @@ class CNN():
     def fit(self,x_train,y_train,x_test,y_test):
         self.model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, callbacks=[checkpoint], validation_data=(x_test, y_test))
         self.model.save("{}/model.h5".format(self.name))
-        

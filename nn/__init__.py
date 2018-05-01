@@ -1,4 +1,5 @@
-from .cnn import CNN
+from cnn import CNN
+from rnn import RNN
 
 __all__ = [
     "CNN",

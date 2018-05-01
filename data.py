@@ -36,3 +36,10 @@ def load_predict_data():
     upload_test = upload_test.drop(cols,axis=1)
 
     return upload_id, upload_test
+
+def _load_iris_test():
+    from sklearn.datasets import load_iris
+    iris = load_iris()
+    x_train, x_test, y_train, y_test = train_test_split(iris.data,iris.target,test_size=0.2, random_state=42 )
+
+    return x_train, y_train, x_test, y_test
