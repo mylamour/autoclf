@@ -1,24 +1,21 @@
-每次重写data.py里的load_train_test，不如放置到单独的文件里用。
-每次加载插件
+# Folder
 
-clf 下面是为了自定义的常用机器学习算法，例如增加了GridSearch等
+* data 目录下放置数据集
+* pipe 文件夹下放置对数据集的预定义处理。
+* clf 文件夹下是为了自定义的机器学习算法，例如GridSearch SVC等
 
-```python
-def set_class_func(CLASS, FUNC):
-    try:
-        funclist = [i for i in dir(FUNC) if callable(getattr(FUNC,i)) and not i.startswith('_') ]
-        for func in funclist:
-            setattr(CLASS,str(func),classmethod(func))    
-    except Exception as e:
-        import sys
-        print("Error When Create Class Method From {} TO {}".format(CLASS,FUNC))
-        sys.exit(1)
-```
 
+# Bug
+
+* 在load数据进行Pipline处理后，再交由自定义算法Pipline处理时可能会有意想不到的错误。(Sklearn本身的问题)，可以只在其中一处做Pipline
 
 # Todo
 
 - [ ] 增加requerments.txt 文件
-- [ ] ETL 工程
-- [ ] AUC、ROC 性能评价模块
+- [ ] 单元测试
+- [x] 伪ETL工程目录
+- [ ] 性能评价模块
 - [x] 动态创建类的函数
+- [x] 自定义 nn 函数
+- [x] 自定义 clf 函数
+- [ ] 捕获ctrl+c，中断当前训练器

@@ -27,14 +27,11 @@ from xgboost import XGBClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 
-from data import load_train_test, _load_iris_test
+from pipe import iload_digits_pipe, iload_iris_pipe,iload_aliatec_pipe
 
-TESTFALG = True
-
-if TESTFALG:
-    x_train, y_train, x_test, y_test = _load_iris_test()
-else:
-    x_train, y_train, x_test, y_test = load_train_test()
+print('Loading Data...',end='')
+x_train, y_train, x_test, y_test = iload_aliatec_pipe()
+print('Done')    
 
 
 clf1 = DecisionTreeClassifier()     #max_depth=4a
@@ -66,13 +63,13 @@ voting2 = VotingClassifier(
         ('knn', clf2),
         ('svc', clf3),
         ('lg',clf4),    
-        ('xgb',clf5)    
+        ('xgb',clf5)
     ],
     voting='soft'
 )
 
-clfs = [
-    c_clf1,    
+clfs = [  
+    c_clf1,
     clf3,
     clf1,clf1_1,clf2,clf4,clf5,clf6,clf7,voting1,voting2
 ]
@@ -83,13 +80,13 @@ for clf in clfs:
 
     print("[*] Now Training With {:<10s}".format(name))
 
-
-    # clf = GridSearchCV(estimator=clf, param_grid=dict(C=Cs),n_jobs=-1)
     clf.fit(x_train,y_train)
     score = clf.score(x_test,y_test)
 
-    # cross_val_score(clf, x_train, y_train, cv=10)
-    # rocauc = roc_auc_score(y_test,score)
+    # if not name.startswith("i"):    # custom class not implement cross valdation 
+    #     score = np.mean(cross_val_score(clf, x_train, y_train, cv=10))
+    # else:
+    #     score = np.mean(clf.cross_val_score(x_train,y_train,cv=10))
 
     if os.path.isfile(modeldumpname):
         print("[x] {} Already Exists".format(modeldumpname))
