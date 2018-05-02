@@ -1,18 +1,23 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import os
 
-# import os
-# script_path = os.path.dirname(os.path.abspath("__file__"))
+from sklearn.model_selection import train_test_split
 
 train_data_path = 'data/atec_anti_fraud_train.csv'
 predict_data_path = 'data/atec_anti_fraud_test_a.csv'
 
-
 DROPCOLUMS = ["id","label","date"]
-
 # 0 .... 1, 0 is safe / 1 is not safe
 
 def iload_aliatec_pipe():
+
+    if os.path.isfile(train_data_path) and os.path.isfile(predict_data_path):
+        print("[√] Path Checked, File Exists")
+    else: 
+        print("[X] Please Make Sure Your Datasets Was Exists")
+        import sys
+        sys.exit(1)
+        
     data = pd.read_csv(train_data_path)
     data = data.fillna(0)
     unlabeled = data[data['label'] == -1]

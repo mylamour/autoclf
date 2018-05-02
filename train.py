@@ -27,72 +27,80 @@ from xgboost import XGBClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 
-from pipe import iload_digits_pipe, iload_iris_pipe,iload_aliatec_pipe
 
-print('Loading Data...',end='')
-x_train, y_train, x_test, y_test = iload_aliatec_pipe()
-print('Done')    
+def train(x_train,y_train,x_test,y_test):
+
+    clf1 = DecisionTreeClassifier()     #max_depth=4a
+    clf1_1 = RandomForestClassifier()
+    clf2 = KNeighborsClassifier(n_neighbors=7)
+    clf3 = SVC(kernel='rbf', probability=True)      # So slowly
+    clf4 = LogisticRegression(random_state=1)
+    clf5 = XGBClassifier()
+    clf6 = GaussianNB()
+    clf7 = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
+                            algorithm="SAMME",n_estimators=200)
+
+    from clf import IGridSVC
+    c_clf1 = IGridSVC()
+
+    voting1 = VotingClassifier(
+        estimators=[
+            ('dt',clf1),
+            ('knn', clf2),
+            ('svc', clf3),
+            ('lg',clf4)    
+        ],
+        voting='soft'
+    )
+
+    voting2 = VotingClassifier(
+        estimators=[
+            ('dt',clf1),
+            ('knn', clf2),
+            ('svc', clf3),
+            ('lg',clf4),    
+            ('xgb',clf5)
+        ],
+        voting='soft'
+    )
+
+    clfs = [  
+        c_clf1,
+        clf3,
+        clf1,clf1_1,clf2,clf4,clf5,clf6,clf7,voting1,voting2
+    ]
+
+    for clf in clfs:
+        name = clf.__class__.__name__
+        modeldumpname = "saved/{}.pkl".format(name.lower())
+
+        print("[*] Now Training With {:<10s}".format(name))
+
+        try:
+            clf.fit(x_train,y_train)
+            score = clf.score(x_test,y_test)
+            if os.path.isfile(modeldumpname):
+                print("[x] {} Already Exists".format(modeldumpname))
+                modeldumpname = "{}.second".format(modeldumpname)
+                print("[-] Rename {}".format(modeldumpname))
+                
+            joblib.dump(clf,modeldumpname)
+
+            print("[+] Saving Model {:<10s} with accuracy: {}".format(modeldumpname,score))
+
+        except KeyboardInterrupt:
+            print("[-] Skip {}".format(name))
+        # if not name.startswith("i"):    # custom class not implement cross valdation 
+        #     score = np.mean(cross_val_score(clf, x_train, y_train, cv=10))
+        # else:
+        #     score = np.mean(clf.cross_val_score(x_train,y_train,cv=10))
 
 
-clf1 = DecisionTreeClassifier()     #max_depth=4a
-clf1_1 = RandomForestClassifier()
-clf2 = KNeighborsClassifier(n_neighbors=7)
-clf3 = SVC(kernel='rbf', probability=True)      # So slowly
-clf4 = LogisticRegression(random_state=1)
-clf5 = XGBClassifier()
-clf6 = GaussianNB()
-clf7 = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
-                         algorithm="SAMME",n_estimators=200)
 
-from clf import IGridSVC
-c_clf1 = IGridSVC()
-
-voting1 = VotingClassifier(
-    estimators=[
-        ('dt',clf1),
-        ('knn', clf2),
-        ('svc', clf3),
-        ('lg',clf4)    
-    ],
-    voting='soft'
-)
-
-voting2 = VotingClassifier(
-    estimators=[
-        ('dt',clf1),
-        ('knn', clf2),
-        ('svc', clf3),
-        ('lg',clf4),    
-        ('xgb',clf5)
-    ],
-    voting='soft'
-)
-
-clfs = [  
-    c_clf1,
-    clf3,
-    clf1,clf1_1,clf2,clf4,clf5,clf6,clf7,voting1,voting2
-]
-
-for clf in clfs:
-    name = clf.__class__.__name__
-    modeldumpname = "saved/{}.pkl".format(name.lower())
-
-    print("[*] Now Training With {:<10s}".format(name))
-
-    clf.fit(x_train,y_train)
-    score = clf.score(x_test,y_test)
-
-    # if not name.startswith("i"):    # custom class not implement cross valdation 
-    #     score = np.mean(cross_val_score(clf, x_train, y_train, cv=10))
-    # else:
-    #     score = np.mean(clf.cross_val_score(x_train,y_train,cv=10))
-
-    if os.path.isfile(modeldumpname):
-        print("[x] {} Already Exists".format(modeldumpname))
-        modeldumpname = "{}.second".format(modeldumpname)
-        print("[-] Rename {}".format(modeldumpname))
-        
-    joblib.dump(clf,modeldumpname)
-
-    print("[+] Saving Model {:<10s} with accuracy: {}".format(modeldumpname,score))
+if __name__ == '__main__':
+    
+    print('Loading Data....',end='',flush=True)
+    from pipe import iload_iris_pipe
+    x_train, y_train, x_test, y_test = iload_iris_pipe()
+    print('\tDone')
+    train(x_train, y_train, x_test, y_test)
