@@ -26,3 +26,13 @@ print(os.path.dirname(os.path.abspath("__file__")))
 print('Loading Data...',end='')
 print('Done)
 ```
+
+* AttributeError: 'LinearSVC' object has no attribute 'predict_proba', https://stackoverflow.com/questions/35076586/linearsvc-vs-svckernel-linear-conflicting-arguments
+```python
+
+LinearSVC(probability=True) # 提示没有该属性
+#Similar to SVC with parameter kernel=’linear’, but implemented in terms of liblinear rather than libsvm, so it has more flexibility in  the choice of penalties and loss functions and should scale better to large numbers of samples.
+# http://scikit-learn.org/stable/modules/svm.html
+SVC( kernel="linear", probability=True)
+
+```

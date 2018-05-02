@@ -3,7 +3,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.feature_selection import SelectKBest,chi2
 
 from sklearn.decomposition import PCA, NMF
-from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
 
 
 
@@ -24,7 +24,7 @@ class IGridSVC():
 
     pipe = Pipeline([
         ('reduce_dim', PCA()),
-        ('classify', LinearSVC())
+        ('classify', SVC( kernel="linear", probability=True))
     ])
 
     def __init__(self):

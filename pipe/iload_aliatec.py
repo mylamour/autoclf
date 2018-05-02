@@ -35,7 +35,7 @@ def iload_aliatec_pipe():
     y_test = test['label']
     return x_train, y_train, x_test, y_test
 
-def load_predict_data():
+def iload_predict_data():
     upload_test = pd.read_csv(predict_data_path)
     upload_test = upload_test.fillna(0)
     upload_id = upload_test['id']
@@ -44,3 +44,10 @@ def load_predict_data():
     upload_test = upload_test.drop(cols,axis=1)
 
     return upload_id, upload_test
+
+
+def isave_predict_data(data_id,predict,filename):
+    p = pd.DataFrame(predict,columns=["score"])
+    res = pd.concat([data_id,p],axis=1)
+    res.to_csv(filename,index=False)
+    print("[+] Save Predict Result To {} Sucessful".format(filename))
