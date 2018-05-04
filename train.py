@@ -96,7 +96,6 @@ def train(x_train,y_train,x_test,y_test):
         #     score = np.mean(clf.cross_val_score(x_train,y_train,cv=10))
 
 
-
 if __name__ == '__main__':
     
     print('Loading Data....',end='',flush=True)
@@ -104,3 +103,5 @@ if __name__ == '__main__':
     x_train, y_train, x_test, y_test = iload_iris_pipe()
     print('\tDone')
     train(x_train, y_train, x_test, y_test)
+
+    

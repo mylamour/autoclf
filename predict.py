@@ -15,16 +15,11 @@ if TESTFALG:
         
         clf = joblib.load(model)
         modelname = clf.__class__.__name__
-        if hasattr(clf, "predict"):
-            print(clf.predict(x_test))
-        if hasattr(clf,'predict_proba'):
-            print(clf.predict_proba(x_test))
-
-def common_save(predict):
-    p = pd.DataFrame(predict,columns=["score"])
-    res = pd.concat([data_id,p],axis=1)
-    res.to_csv(filename,index=False)
-    print("[+] Save Predict Result To {} Sucessful".format(filename))
+        if hasattr(clf, "predict") and hasattr(clf, 'predict_proba'):
+            predicts = clf.predict(x_test)
+            predicts_proba = clf.predict_proba(x_test)
+            
+            isave_iris_data(predicts, predicts_proba, 'saved/{}.predict'.format(modelname))
 
 
 def main():
@@ -46,7 +41,7 @@ def main():
             _ = [ 1-i[0] for i in _ ]
             save_predict_proba = "saved/{}_predict_proba.csv".format(modelname)
             isave_predict_data(data_id, _, save_predict_proba)
-
+            
 if __name__ == '__main__':
     main()
 
