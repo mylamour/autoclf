@@ -12,7 +12,7 @@
 │
 └── saved
 │
-└── models.py│
+└── models.py
 ├── train.py
 └── predict.py
 ```
