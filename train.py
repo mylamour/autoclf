@@ -1,107 +1,63 @@
-import os
-
-import pandas as pd
-import numpy as np
-
-# Sklearn Common Import
-from sklearn.metrics import confusion_matrix, roc_auc_score
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
-from sklearn.feature_selection import SelectKBest, SelectFromModel
-from sklearn.pipeline import Pipeline
-from sklearn.externals import joblib
-
-# Decomposition
-# PCA 无监督， LDA 有监督
-from sklearn.decomposition import PCA
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-
-# Some Classifier Algorithms
-
-from sklearn.ensemble import  RandomForestClassifier, AdaBoostClassifier,\
-                             ExtraTreesClassifier,GradientBoostingClassifier,VotingClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
-from xgboost import XGBClassifier
-
-from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
+from models import Model, load_classifications
+import importlib
+import sys
+import click
 
 
-def train(x_train,y_train,x_test,y_test):
+CLASSFICATIONS = load_classifications()
 
-    clf1 = DecisionTreeClassifier()     #max_depth=4a
-    clf1_1 = RandomForestClassifier()
-    clf2 = KNeighborsClassifier(n_neighbors=7)
-    clf3 = SVC(kernel='rbf', probability=True)      # So slowly
-    clf4 = LogisticRegression(random_state=1)
-    clf5 = XGBClassifier()
-    clf6 = GaussianNB()
-    clf7 = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
-                            algorithm="SAMME",n_estimators=200)
+CLUSTERS = None
 
-    from clf import IGridSVC
-    c_clf1 = IGridSVC()
 
-    voting1 = VotingClassifier(
-        estimators=[
-            ('dt',clf1),
-            ('knn', clf2),
-            ('svc', clf3),
-            ('lg',clf4)    
-        ],
-        voting='soft'
-    )
+@click.group()
+def cli():
+    pass
 
-    voting2 = VotingClassifier(
-        estimators=[
-            ('dt',clf1),
-            ('knn', clf2),
-            ('svc', clf3),
-            ('lg',clf4),    
-            ('xgb',clf5)
-        ],
-        voting='soft'
-    )
+@cli.command()
+@click.option('--method',default='allmethod',help="Your method for training model")
+@click.option('--pipe',default='None',help="Data Pipe Line File ")
+@click.option('--cross-validation',default=10, help="Cross Validation ")
+def cluster(method,pipe,cross_validation):
+    """
+        this for select cluster model
+    """
+    click.echo(click.style("[X] Temporaly Not Implement", fg='red', bg='black'))
 
-    clfs = [  
-        c_clf1,
-        clf3,
-        clf1,clf1_1,clf2,clf4,clf5,clf6,clf7,voting1,voting2
-    ]
+@cli.command()
+@click.option('--method',default='allmethod',help="Your method for training model", multiple=True)
+@click.option('--pipe',default=None,help="Data Pipe Line File ")
+@click.option('--cross-validation',default=10, help="Cross Validation ")
+def classification(method,pipe,cross_validation):
+    """
+        this for select classification model
+    """
 
-    for clf in clfs:
-        name = clf.__class__.__name__
-        modeldumpname = "saved/{}.pkl".format(name.lower())
+    if pipe == None:
+        click.echo(click.style("[X] You need import your data"))
+        sys.exit(1)
+    else:
+        spec = importlib.util.spec_from_file_location(pipe[:-3],pipe)
+        if spec is not None:
+            datapipe = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(datapipe)
+            if hasattr(datapipe, "iload_pipe"):
+                x_train, y_train, x_test, y_test = datapipe.iload_pipe()
+            else:
+                click.echo(click.style("[X] Data load script was not expected, Please Check it Again",fg='red'))
 
-        print("[*] Now Training With {:<10s}".format(name))
+    methods = [CLASSFICATIONS.get(x) for x in method if CLASSFICATIONS.get(x)]
+    if methods:
+        clfs = Model(methods)
+        clfs.fit(x_train,y_train=y_train,x_test=x_test, y_test=y_test)
+        clfs.save()
+    else:
+        click.echo(click.style("[!] Now We Will Use Default All Method", fg="green",bg="black"))
+        clfs = Model(CLASSFICATIONS.values())
+        clfs.fit(x_train,y_train=y_train,x_test=x_test, y_test=y_test)
+        clfs.save()
 
-        try:
-            clf.fit(x_train,y_train)
-            score = clf.score(x_test,y_test)
-            if os.path.isfile(modeldumpname):
-                print("[x] {} Already Exists".format(modeldumpname))
-                modeldumpname = "{}.second".format(modeldumpname)
-                print("[-] Rename {}".format(modeldumpname))
-                
-            joblib.dump(clf,modeldumpname)
-
-            print("[+] Saving Model {:<10s} with accuracy: {}".format(modeldumpname,score))
-
-        except KeyboardInterrupt:
-            print("[-] Skip {}".format(name))
-        # if not name.startswith("i"):    # custom class not implement cross valdation 
-        #     score = np.mean(cross_val_score(clf, x_train, y_train, cv=10))
-        # else:
-        #     score = np.mean(clf.cross_val_score(x_train,y_train,cv=10))
-
+def main():
+    cli()
 
 if __name__ == '__main__':
-    
-    print('Loading Data....',end='',flush=True)
-    from pipe import iload_iris_pipe
-    x_train, y_train, x_test, y_test = iload_iris_pipe()
-    print('\tDone')
-    train(x_train, y_train, x_test, y_test)
-
-    
+    main()

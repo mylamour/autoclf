@@ -36,3 +36,15 @@ LinearSVC(probability=True) # 提示没有该属性
 SVC( kernel="linear", probability=True)
 
 ```
+
+* 添加自定义函数的`cross_validation`支持, https://stackoverflow.com/questions/20330445/how-to-write-a-custom-estimator-in-sklearn-and-use-cross-validation-on-it
+  
+```
+    class A:
+        def __init__(self,l):
+            self.l = l
+
+        def get_params(self, deep = False):
+            return {'l':self.l}
+
+```

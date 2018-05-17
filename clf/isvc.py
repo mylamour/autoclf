@@ -27,7 +27,8 @@ class IGridSVC():
         ('classify', SVC( kernel="linear", probability=True))
     ])
 
-    def __init__(self):
+    def __init__(self, l=0.01):
+        self.l = l
         self.model = None
 
     def fit(self,x_train, y_train):
@@ -42,3 +43,10 @@ class IGridSVC():
 
     def predict_proba(self, x_test):
         return self.model.predict_proba(x_test)
+
+    def get_params(self, deep = False):
+        """
+            for cross_validation:
+                https://stackoverflow.com/questions/20330445/how-to-write-a-custom-estimator-in-sklearn-and-use-cross-validation-on-it
+        """
+        return {'l':self.l}

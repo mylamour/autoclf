@@ -44,12 +44,3 @@ def main():
             
 if __name__ == '__main__':
     main()
-
-    # def write_predict(data_id, predicts):
-    #     with open('{}.predict'.format(filename), 'w') as csvfile:
-    #         fieldnames = ['id', 'score']
-    #         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    #         writer.writeheader()
-
-    #         for uuid, predict in zip(data_id,predicts):
-    #             writer.writerow({'id': uuid, 'last_name': predict})
