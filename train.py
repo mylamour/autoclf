@@ -33,7 +33,7 @@ def classification(method,pipe,cross_validation):
     """
 
     if pipe == None:
-        click.echo(click.style("[X] You need import your data"))
+        click.echo(click.style("[X] You need import your data",fg='red',bg='black'))
         sys.exit(1)
     else:
         spec = importlib.util.spec_from_file_location(pipe[:-3],pipe)
