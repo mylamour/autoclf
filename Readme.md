@@ -25,6 +25,7 @@
 
 # Useage:
 
+## train.py
 ```
 $ python train.py
 
@@ -111,6 +112,67 @@ $ python train.py classification --pipe pipe/iload_iris.py
 [+] Save it in saved/igridsvc.pkl.second
 ```
 
+## predict.py
+载入saved文件夹下的已经保存好的模型进行预测，默认预测结果输出到`saved`文件夹，分别以`predict`和`proba`的后缀结尾，还可以通过，自定义输出路径，指定预测结果的输出，例如`--out woqu`
+
+```
+$ python predict.py predict  --help
+Usage: predict.py predict [OPTIONS]
+
+Options:
+  --method TEXT  Your method for training model
+  --pipe TEXT    Data Pipe Line File
+  --out TEXT     Directory for save predict
+  --help         Show this message and exit.
+
+```
+
+```
+$ python predict.py predict  --pipe pipe/iload_iris.py --method saved/adaboostclassifier.pkl
+
+ [####################################]  100% predict use model: AdaBoostClassifier
+
+```
+
+```
+$python predict.py predict  --pipe pipe/iload_iris.py --method saved/adaboostclassifier.pkl --method saved/decisiontreeclassifier.pkl
+  
+  [##################------------------]   50% predict use model: AdaBoostClassifier
+  [####################################]  100% predict use model: DecisionTreeClassifier
+
+```
+
+```
+$ python predict.py predict  --pipe pipe/iload_iris.py --method saved
+Use Batch Models From /home/mour/MlDl/autoclf/saved
+  [###---------------------------------]   10% predict use model: LogisticRegression
+  [#######-----------------------------]   20% predict use model: AdaBoostClassifier
+  [##########--------------------------]   30% predict use model: XGBClassifier
+  [##############----------------------]   40% predict use model: SVC
+  [##################------------------]   50% predict use model: GaussianNB
+  [#####################---------------]   60% predict use model: KNeighborsClassifier
+  [#########################-----------]   70% predict use model: VotingClassifier
+  [############################--------]   80% predict use model: DecisionTreeClassifier
+  [################################----]   90% predict use model: RandomForestClassifier
+  [####################################]  100% predict use model: IGridSVC
+```
+
+```
+$ python predict.py predict  --pipe pipe/iload_iris.py --method saved --out woqu
+Use Batch Models From /home/mour/MlDl/autoclf/saved
+  [###---------------------------------]   10% predict use model: LogisticRegression
+  [#######-----------------------------]   20% predict use model: AdaBoostClassifier
+  [##########--------------------------]   30% predict use model: XGBClassifier
+  [##############----------------------]   40% predict use model: SVC
+  [##################------------------]   50% predict use model: GaussianNB
+  [#####################---------------]   60% predict use model: KNeighborsClassifier
+  [#########################-----------]   70% predict use model: VotingClassifier
+  [############################--------]   80% predict use model: DecisionTreeClassifier
+  [################################----]   90% predict use model: RandomForestClassifier
+  [####################################]  100% predict use model: IGridSVC
+
+```
+
 # Note
 
 * 在load数据进行Pipline处理后，再交由自定义算法Pipline处理时可能会有意想不到的错误。(Sklearn本身的问题)，可以只在其中一处做Pipline,即只在pipe文件夹下load数据时自定义，也可以只在自定义算法时进行pipline
@@ -122,7 +184,7 @@ $ python train.py classification --pipe pipe/iload_iris.py
 - [ ] 增加requerments.txt 文件
 - [ ] 单元测试
 - [ ] 增加`cluster`算法相关
-- [ ] 重构`predict`文件
+- [x] 重构`predict`文件
 - [x] 伪ETL工程目录
 - [ ] 性能评价模块
 - [x] 动态创建类的函数

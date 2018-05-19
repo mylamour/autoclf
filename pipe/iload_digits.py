@@ -24,3 +24,7 @@ def iload_pipe():
         data, lables, test_size=0.2, random_state=42)
 
     return x_train, y_train, x_test, y_test
+
+def iload_predict():
+    digits = load_digits()
+    return digits.data
