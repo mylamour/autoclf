@@ -48,3 +48,8 @@ SVC( kernel="linear", probability=True)
             return {'l':self.l}
 
 ```
+
+* 生成requirements.txt
+```
+pipreqs .
+```

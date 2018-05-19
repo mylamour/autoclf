@@ -181,7 +181,7 @@ Use Batch Models From /home/mour/MlDl/autoclf/saved
 
 # Todo
 
-- [ ] 增加requerments.txt 文件
+- [x] 增加requerments.txt 文件
 - [ ] 单元测试
 - [ ] 增加`cluster`算法相关
 - [x] 重构`predict`文件

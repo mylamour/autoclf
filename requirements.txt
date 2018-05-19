@@ -1,0 +1,6 @@
+Keras==2.0.5
+click==6.7
+pandas==0.22.0
+numpy==1.14.1
+scikit_learn==0.19.1
+xgboost==0.71
