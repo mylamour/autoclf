@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline, make_pipeline
 
 
-def iload_pipe():
+def itrain_pipe():
 
     digits = load_digits()
     data = digits.data

@@ -59,7 +59,7 @@ def predict(pipe, method, out):
             datapipe = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(datapipe)
             if hasattr(datapipe, "ipredict_pipe"):
-                x_train, y_train, x_test, y_test = datapipe.iload_pipe()
+                predict_data = datapipe.ipredict_pipe()
             else:
                 click.echo(click.style("[X] Data load script was not expected, Please Check it Again",fg='red'))
 
@@ -71,14 +71,14 @@ def predict(pipe, method, out):
         with click.progressbar(models) as models:
             for model in models:
                 try:
-                    predict_model(model,x_test,out)
+                    predict_model(model,predict_data,out)
                 except Exception as e:
                     print("[X] {} Error".format(model))
     else:
         with click.progressbar(method) as methods:            
             for model in methods:
                 try:
-                    predict_model(model,x_test,out)
+                    predict_model(model,predict_data,out)
                 except Exception as e:
                     print("[X] {} Error".format(model))
 

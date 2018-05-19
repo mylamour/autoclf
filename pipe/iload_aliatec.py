@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 DROPCOLUMS = ["id","label","date"]
 # 0 .... 1, 0 is safe / 1 is not safe
 
-def iload_pipe(train_data_path):
+def itrain_pipe(train_data_path):
 
     if os.path.isfile(train_data_path):
         print("[√] Path Checked, File Exists")
@@ -34,7 +34,7 @@ def iload_pipe(train_data_path):
     y_test = test['label']
     return x_train, y_train, x_test, y_test
 
-def isave_data(predict_data_path):
+def ipredict_pipe(predict_data_path):
     upload_test = pd.read_csv(predict_data_path)
     upload_test = upload_test.fillna(0)
     upload_id = upload_test['id']

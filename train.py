@@ -40,8 +40,8 @@ def classification(method,pipe,cross_validation):
         if spec is not None:
             datapipe = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(datapipe)
-            if hasattr(datapipe, "iload_pipe"):
-                x_train, y_train, x_test, y_test = datapipe.iload_pipe()
+            if hasattr(datapipe, "itrain_pipe"):
+                x_train, y_train, x_test, y_test = datapipe.itrain_pipe()
             else:
                 click.echo(click.style("[X] Data load script was not expected, Please Check it Again",fg='red'))
 

@@ -177,7 +177,7 @@ Use Batch Models From /home/mour/MlDl/autoclf/saved
 
 * 在load数据进行Pipline处理后，再交由自定义算法Pipline处理时可能会有意想不到的错误。(Sklearn本身的问题)，可以只在其中一处做Pipline,即只在pipe文件夹下load数据时自定义，也可以只在自定义算法时进行pipline
 
-* 数据预处理文件的定义需要遵循格式，即要处理内容定义在`iload_pipe`函数中
+* 数据预处理文件的定义需要遵循格式，即要处理内容定义在`iload_pipe`函数中,预测函数定义在`ipredict_pipe`中
 
 # Todo
 
