@@ -74,6 +74,13 @@ $ python train.py classification --pipe pipe/iload_digits.py --method lg
 ```
 
 ```
+$ python train.py classification --pipe pipe/iload_iris.py  --method lg --loss neg_log_loss
+[*] Now Training With LogisticRegression Loss :  neg_log_loss
+ And Model Scores 1.0
+[+] Save it in saved/logisticregression.pkl
+```
+
+```
 $ python train.py classification --pipe pipe/iload_iris.py
 
 [!] Now We Will Use Default All Method
@@ -186,7 +193,7 @@ Use Batch Models From /home/mour/MlDl/autoclf/saved
 - [ ] 增加`cluster`算法相关
 - [x] 重构`predict`文件
 - [x] 伪ETL工程目录
-- [ ] 性能评价模块
+- [x] 性能评价模块
 - [x] 动态创建类的函数
 - [x] 自定义 nn 函数
 - [x] 自定义 clf 函数

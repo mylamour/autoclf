@@ -83,11 +83,12 @@ def load_classifications():
 
 class Model:
 
-    def __init__(self, clfs):
+    def __init__(self, clfs,loss):
         self.clfs = clfs
         self._score = None
         self._clf = None        
         self.models = []
+        self.loss = loss
 
     # def model(self,clf):
     #     return self.clf
@@ -110,7 +111,8 @@ class Model:
         name = self._clf.__class__.__name__
         print("[*] Now Training With {:<10s}".format(name), end="")
         self._clf.fit(x_train, y_train)
-        cross_validate(self._clf,x_train,y_train)
+        print(" Loss :\t",self.loss)
+        cross_validate(self._clf,x_train,y_train,scoring=self.loss)
         self.score(x_test,y_test)
         print(" And Model Scores {:<10}".format(self._score))
         
@@ -127,51 +129,11 @@ class Model:
     def predict_proba(self):
         pass
 
+    def evaluation(self):
+        pass
+
     def save(self):
         for model in self.models:
             name = model.__class__.__name__
             modeldumpname = "saved/{}.pkl".format(name.lower())
             dumpit(model, modeldumpname)
-            
-# def train(x_train,y_train,x_test,y_test):
-
-    # for clf in clfs:
-    #     Flag = True
-    #     name = clf.__class__.__name__
-    #     modeldumpname = "saved/{}.pkl".format(name.lower())
-
-    #     print("[*] Now Training With {:<10s}".format(name))
-
-    #     try:
-    #         clf.fit(x_train,y_train)
-    #         cross_validate(clf,x_train,y_train)
-    #     except KeyboardInterrupt:
-    #         Flag = False
-    #         print("[-] Skip {}".format(name))
-
-    #     if Flag:
-    #         score = clf.score(x_test,y_test)
-    #         dumpit(clf,modeldumpname)
-    #         print("[+] Saving Model {:<10s} with accuracy: {}".format(modeldumpname,score))
-
-        # if not name.startswith("i"):    # custom class not implement cross valdation
-        #     score = np.mean(cross_val_score(clf, x_train, y_train, cv=10))
-        # else:
-        #     score = np.mean(clf.cross_val_score(x_train,y_train,cv=10))
-
-
-# if __name__ == '__main__':
-
-#     print('Loading Data....',end='',flush=True)
-#     from pipe import iload_iris_pipe, iload_aliatec_pipe
-#     x_train, y_train, x_test, y_test = iload_iris_pipe()
-#     print('\tDone')
-#     train(x_train, y_train, x_test, y_test)
-
-    # clf = XGBClassifier()
-
-    # clf.fit(x_train,y_train)
-    # score = clf.score(x_test,y_test)
-    # modeldumpname = clf.__class__.__name__
-    # dumpit(clf,modeldumpname)
-    # print("[+] Saving Model {:<10s} with accuracy: {}".format(modeldumpname,score))

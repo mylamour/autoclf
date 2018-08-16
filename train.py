@@ -26,8 +26,9 @@ def cluster(method,pipe,cross_validation):
 @cli.command()
 @click.option('--method',default='allmethod',help="Your method for training model", multiple=True)
 @click.option('--pipe',default=None,help="Data Pipe Line File ")
+@click.option('--loss',default='neg_log_loss',help="Model Evaluation Method ")
 @click.option('--cross-validation',default=10, help="Cross Validation ")
-def classification(method,pipe,cross_validation):
+def classification(method,pipe,cross_validation,loss):
     """
         this for select classification model
     """
@@ -47,12 +48,12 @@ def classification(method,pipe,cross_validation):
 
     methods = [CLASSFICATIONS.get(x) for x in method if CLASSFICATIONS.get(x)]
     if methods:
-        clfs = Model(methods)
+        clfs = Model(methods,loss=loss)
         clfs.fit(x_train,y_train=y_train,x_test=x_test, y_test=y_test)
         clfs.save()
     else:
         click.echo(click.style("[!] Now We Will Use Default All Method", fg="green",bg="black"))
-        clfs = Model(CLASSFICATIONS.values())
+        clfs = Model(CLASSFICATIONS.values(),loss=loss)
         clfs.fit(x_train,y_train=y_train,x_test=x_test, y_test=y_test)
         clfs.save()
 
