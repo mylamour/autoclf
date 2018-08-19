@@ -1,19 +1,3 @@
-# import pandas as pd
-
-# csv_file = 'FILE23662'
-
-# fileinfo = pd.read_csv(csv_file, header=None)
-
-# label = fileinfo[1][0]
-
-# fileinfo = fileinfo.drop([0,1],axis=1)
-
-# fileinfo = fileinfo.sort_values(by=[3])
-
-# print("Label: ", label)
-# print(fileinfo.head(10))
-# split -l 200000 file.txt new   
-
 import click
 import os
 import numpy as np
@@ -52,8 +36,11 @@ def processsummary(filename):
     # apinfo.sort(key=lambda x: x[3])
     # 在此处pad_sequences到一致
     # x_api_train = np.asarray(list(map(lambda x: np.asarray(x[:-1]) , apinfo[:300])))
-    x_api_train = np.asarray(apinfo[:300])
-    # x_api_train = tf.keras.preprocessing.sequence.pad_sequences(x_api_train,maxlen=SEQUENCE,padding='pre',truncating='pre',value = 0)
+    x_api_train = np.asarray(apinfo[:100])
+    h,w = x_api_train.shape
+    x_api_train = x_api_train.reshape(1, h*w)
+
+    x_api_train = tf.keras.preprocessing.sequence.pad_sequences(x_api_train,maxlen=SEQUENCE,padding='pre',truncating='pre',value = 0)
 
     y_api_train = np.asarray(label)
 
@@ -98,7 +85,7 @@ def itrain_pipe():
         if os.path.basename(r) == '0summary':
             # We only get 1/4 of normal file
             for item in f:
-                if int(item.split('FILE')[1]) %12 == 0:
+                if int(item.split('FILE')[1]) %5 == 0:
                     x,y = processsummary(os.path.join(r, item))
                     x_train.append(x)
                     y_train.append(y)
@@ -109,11 +96,8 @@ def itrain_pipe():
             x_train.append(x)
             y_train.append(y)
     x = np.asarray(x_train)
+    x = x.reshape(x.shape[0], x.shape[1]*x.shape[2])    
     y = np.asarray(y_train)
-
-    x = tf.keras.preprocessing.sequence.pad_sequences(x,maxlen=SEQUENCE,padding='pre',truncating='pre',value = 0)
-    x = x.reshape(x.shape[0], x.shape[1]*x.shape[2])
-    # x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=42 )
     x_train, x_test, y_train, y_test = train_test_split(x, y,test_size=0.2, random_state=42 )
     
     return x_train, y_train, x_test, y_test
