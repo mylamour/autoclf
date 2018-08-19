@@ -7,7 +7,7 @@ from sklearn.svm import SVC
 
 
 
-class IGridSVC():
+class Model():
     N_FEATURES_OPTIONS = [2, 4]
     C_OPTIONS = [1, 10, 100, 1000]
     param_grid = [
@@ -32,7 +32,7 @@ class IGridSVC():
         self.model = None
 
     def fit(self,x_train, y_train):
-        self.model = GridSearchCV(IGridSVC.pipe, cv=3, n_jobs=-1, param_grid=IGridSVC.param_grid)
+        self.model = GridSearchCV(Model.pipe, cv=3, n_jobs=-1, param_grid=Model.param_grid)
         self.model = self.model.fit(x_train,y_train)
 
     def score(self,x_test,y_test):
