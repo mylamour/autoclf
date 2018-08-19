@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split, cross_val_score, cross_val
 from sklearn.feature_selection import SelectKBest, SelectFromModel
 from sklearn.pipeline import Pipeline
 from sklearn.externals import joblib
+from sklearn import metrics
 
 # Decomposition
 # PCA 无监督， LDA 有监督
@@ -28,7 +29,7 @@ from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 
 
-from clf import IGridSVC
+# from clf import IGridSVC
 
 
 def dumpit(clf, modeldumpname):
@@ -46,7 +47,7 @@ def load_classifications():
         must be key and value
     """
        
-    igridsvc = IGridSVC()
+    # igridsvc = IGridSVC()
     
     dt = DecisionTreeClassifier()  # max_depth=4a
     rf = RandomForestClassifier()
@@ -58,26 +59,26 @@ def load_classifications():
     adaboost = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
                        algorithm="SAMME", n_estimators=200)
 
-    Voting1 = VotingClassifier(
-        estimators=[
-            ('dt', dt),
-            ('knn', knn),
-            ('rbfsvc', rbfsvc),
-            ('lg', lg),
-            ('xgb', xgb)
-        ],
-        voting='soft'
-    )
+    # Voting1 = VotingClassifier(
+    #     estimators=[
+    #         ('dt', dt),
+    #         ('knn', knn),
+    #         ('rbfsvc', rbfsvc),
+    #         ('lg', lg),
+    #         ('xgb', xgb)
+    #     ],
+    #     voting='soft'
+    # )
 
-    Voting2 = VotingClassifier(
-        estimators=[
-                    ('dt', dt),
-                    ('knn', knn),
-                    ('svc', rbfsvc),
-                    ('lg', lg)
-        ],
-        voting='soft'
-    )
+    # Voting2 = VotingClassifier(
+    #     estimators=[
+    #                 ('dt', dt),
+    #                 ('knn', knn),
+    #                 ('svc', rbfsvc),
+    #                 ('lg', lg)
+    #     ],
+    #     voting='soft'
+    # )
 
     return locals()
 
@@ -111,8 +112,9 @@ class Model:
         name = self._clf.__class__.__name__
         print("[*] Now Training With {:<10s}".format(name), end="")
         self._clf.fit(x_train, y_train)
-        print(" Loss :\t",self.loss)
-        cross_validate(self._clf,x_train,y_train,scoring=self.loss)
+        cross_validate(self._clf,x_train,y_train)
+        print(" {} : {} \t".format(self.loss,self.evaluation(y_test, self._clf.predict_proba(x_test))))
+        print("Report:{}".format(metrics.classification_report(y_test,self._clf.predict(x_test))))
         self.score(x_test,y_test)
         print(" And Model Scores {:<10}".format(self._score))
         
@@ -129,11 +131,21 @@ class Model:
     def predict_proba(self):
         pass
 
-    def evaluation(self):
-        pass
+    def evaluation(self, y_test, y_pred):
+
+        if self.loss == "neg_log_loss" or "log_loss":
+            return metrics.log_loss(y_test,y_pred)
+
+        if self.loss == "brier_score_loss" or "bs":
+            return metrics.brier_score_loss(y_test, y_pred)
+
+        if self.loss == "ranking_loss":
+            return metrics.label_ranking_loss(y_test,y_pred)
+        
 
     def save(self):
         for model in self.models:
             name = model.__class__.__name__
-            modeldumpname = "saved/{}.pkl".format(name.lower())
+            import time
+            modeldumpname = "saved/{}-{}.pkl".format(name.lower(),time.ctime().replace(" ","-"))
             dumpit(model, modeldumpname)
