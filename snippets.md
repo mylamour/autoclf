@@ -55,6 +55,7 @@ pipreqs .
 ```
 * `LinearSVC` 没有 `predict_proba` https://stackoverflow.com/questions/26478000/converting-linearsvcs-decision-function-to-probabilities-scikit-learn-python
 ```
+ from sklearn.calibration import CalibratedClassifierCV
  svm = LinearSVC()
  clf = CalibratedClassifierCV(svm) 
  clf.fit(X_train, y_train)
