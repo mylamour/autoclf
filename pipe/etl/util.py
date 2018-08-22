@@ -35,3 +35,9 @@ def walkfolder(folder):
         for item in f:
             files.append(os.path.join(r,item))
     return files
+
+def padit():
+    """
+        pad sequence to same
+    """
+    pass
