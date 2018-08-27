@@ -36,6 +36,14 @@ def walkfolder(folder):
             files.append(os.path.join(r,item))
     return files
 
+def uniqlistoflists(d):
+    """
+        [["hhh","a"],["woqu","b"],["hhh","a"]]
+    ->  [["hhh","a"],["woqu","b"]]
+    """
+
+    return [list(x) for x in set(tuple(x) for x in d)]
+
 def padit():
     """
         pad sequence to same

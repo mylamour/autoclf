@@ -62,3 +62,11 @@ pipreqs .
  y_proba = clf.predict_proba(X_test)
 
 ```
+
+* BaggingClassifier is Roughly Equivalent to RandomForestClassifier 
+
+```
+from sklearn.tree import DecisionTreeClassifier
+BaggingClassifier((DecisionTreeClassifier, splitter="random",max_leaf_nodes=16),
+                n_estimators=500, max_samples=1.0, bootstrap=True, n_jobs=-1)
+```

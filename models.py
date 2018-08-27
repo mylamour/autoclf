@@ -24,12 +24,10 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
-
-
-# from clf import IGridSVC
 
 
 def dumpit(clf, modeldumpname):
@@ -41,44 +39,30 @@ def dumpit(clf, modeldumpname):
     print("[+] Save it in {}".format(modeldumpname))
 
 
-def load_classifications():
+def load_classifications(boosting=True, gridsearch=False):
     """
         please define your classifications here,
         must be key and value
     """
-       
-    # igridsvc = IGridSVC()
+
+    if boosting:
+        rf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16)
+        adaboost = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
+                    algorithm="SAMME", n_estimators=200)
+        xgb = XGBClassifier()
+        lgb = LGBMClassifier()
     
+    if gridsearch:
+        """
+            find igrid file to have a grid search
+        """
+        pass
+
     dt = DecisionTreeClassifier()  # max_depth=4a
-    rf = RandomForestClassifier()
-    knn = KNeighborsClassifier(n_neighbors=7)
+    knn = KNeighborsClassifier()
     rbfsvc = SVC(kernel='rbf', probability=True)
     lg = LogisticRegression(random_state=1)
-    xgb = XGBClassifier()
     gnb = GaussianNB()
-    adaboost = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
-                       algorithm="SAMME", n_estimators=200)
-
-    # Voting1 = VotingClassifier(
-    #     estimators=[
-    #         ('dt', dt),
-    #         ('knn', knn),
-    #         ('rbfsvc', rbfsvc),
-    #         ('lg', lg),
-    #         ('xgb', xgb)
-    #     ],
-    #     voting='soft'
-    # )
-
-    # Voting2 = VotingClassifier(
-    #     estimators=[
-    #                 ('dt', dt),
-    #                 ('knn', knn),
-    #                 ('svc', rbfsvc),
-    #                 ('lg', lg)
-    #     ],
-    #     voting='soft'
-    # )
 
     return locals()
 

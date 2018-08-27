@@ -25,7 +25,7 @@ def cluster(method,pipe,cross_validation):
     click.echo(click.style("[X] Temporaly Not Implement", fg='red', bg='black'))
 
 @cli.command()
-@click.option('--method',default='allmethod',help="Your method for training model")
+@click.option('--method',default='allmethod',help="Your method for training model",multiple=True)
 @click.option('--pipe',default=None,help="Data Pipe Line File ")
 @click.option('--loss',default='neg_log_loss',help="Model Evaluation Method ")
 @click.option('--cross-validation',default=10, help="Cross Validation ")
@@ -51,6 +51,7 @@ def classification(method,pipe,cross_validation,loss):
         """
             load train method from file, also need in debug file, so it's etl util ??
         """
+        method = "".join(method)
         from sklearn.model_selection import cross_validate
         from sklearn import metrics
         try:
@@ -61,7 +62,7 @@ def classification(method,pipe,cross_validation,loss):
             modeldumpname = "saved/{}-{}.pkl".format(os.path.basename(method), time.ctime().replace(" ","-"))
             dumpit(clf, modeldumpname)
             
-            print("Training Score: \t",clf.score(x_test, y_test), end="")
+            print("Training Score: \t",clf.score(x_test, y_test))
             if loss in metrics.__all__:
                 loss = getattr(metrics, loss)
             else:
@@ -69,7 +70,7 @@ def classification(method,pipe,cross_validation,loss):
             y_prob = clf.predict_proba(x_test)
             y_predict = clf.predict(x_test)
             
-            print("Classification Report: ", metrics.classification_report(y_test,y_predict))
+            print("Classification Report:   \n", metrics.classification_report(y_test,y_predict))
             print("{}:{}".format(loss.__name__,loss(y_test, y_prob)))
         
         except Exception as e:
